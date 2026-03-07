@@ -1,0 +1,6 @@
+n = int(input())
+keys = input().split()
+values = input().split()
+dictionary = dict(zip(keys, values))
+query = input()
+print(dictionary.get(query, "Not found"))
