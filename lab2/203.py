@@ -1,3 +1,3 @@
-n = int(input())
-arr = list(map(int, input().split()))
-print(sum(arr))
+n=int(input())
+a=list(map(int,input().split()))
+print(sum(a))
