@@ -1,5 +1,4 @@
 DB_NAME = "postgres"
-DB_USER = "danakurmangazy"
-DB_PASSWORD = "naruto"
+DB_USER = "aknietramazan"
 DB_HOST = "localhost"
 DB_PORT = "5432"
