@@ -1,4 +1,4 @@
-DB_NAME = "phonebook"
+DB_NAME = "postgres"
 DB_USER = "danakurmangazy"
 DB_PASSWORD = "naruto"
 DB_HOST = "localhost"
