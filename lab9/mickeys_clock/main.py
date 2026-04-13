@@ -1,25 +1,34 @@
 import pygame
 from clock import MickeyClock
 
-#настройка окна
-pygame.init()
-screen = pygame.display.set_mode((400, 400))
-pygame.display.set_caption("Mickey's Clock")
-clock = pygame.time.Clock()
 
-center = (200, 200)
-mickey_clock = MickeyClock(screen, center)
+def main():
+    pygame.init()
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    WIDTH = 500
+    HEIGHT = 500
 
-    screen.fill((255, 255, 255))  #белый фон
-    mickey_clock.update()         #обновление
-    pygame.display.flip()          
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Mickey Clock")
 
-    clock.tick(1)  #обновление каждую секунду
+    clock = pygame.time.Clock()
 
-pygame.quit()
+    app = MickeyClock(WIDTH, HEIGHT)
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        app.update()
+        app.draw(screen)
+
+        pygame.display.flip()
+        clock.tick(60)
+
+    pygame.quit()
+
+
+if __name__ == "__main__":
+    main()

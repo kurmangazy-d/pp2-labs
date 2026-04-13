@@ -2,38 +2,66 @@ import pygame
 import datetime
 import os
 
+
 class MickeyClock:
-    def __init__(self, screen, center):
-        self.screen = screen
-        self.center = center
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
 
-        #руки микки
-        img_path = os.path.join(os.path.dirname(__file__), "images", "mickey_hand.png")
-        self.hand_img = pygame.image.load(img_path).convert_alpha()
+        base_dir = os.path.dirname(__file__)
+        image_dir = os.path.join(base_dir, "images")
 
-        #две версии рук
-        self.minute_hand = pygame.transform.smoothscale(self.hand_img, (30, 180))  # длинная
-        self.second_hand = pygame.transform.smoothscale(self.hand_img, (25, 150))  # короче
+        self.background = pygame.image.load(
+            os.path.join(image_dir, "clock.png")
+        ).convert_alpha()
 
-        #создаем центр
-        self.minute_offset = self.minute_hand.get_rect(center=(0, self.minute_hand.get_height()//2))
-        self.second_offset = self.second_hand.get_rect(center=(0, self.second_hand.get_height()//2))
+        self.left_hand = pygame.image.load(
+            os.path.join(image_dir, "left_hand.png")
+        ).convert_alpha()
 
-    def draw_hand(self, hand_img, angle):
-        #рука вращается
-        rotated = pygame.transform.rotate(hand_img, -angle)
-        rect = rotated.get_rect(center=self.center)
-        self.screen.blit(rotated, rect.topleft)
+        self.right_hand = pygame.image.load(
+            os.path.join(image_dir, "right_hand.png")
+        ).convert_alpha()
+
+        self.background = pygame.transform.scale(
+            self.background, (width, height)
+        )
+
+        self.left_hand = pygame.transform.scale(
+            self.left_hand, (width, height)
+        )
+
+        self.right_hand = pygame.transform.scale(
+            self.right_hand, (width, height)
+        )
+
+        self.center = (width // 2, height // 2)
+
+        self.left_angle = 0
+        self.right_angle = 0
 
     def update(self):
         now = datetime.datetime.now()
-        seconds = now.second
+
         minutes = now.minute
+        seconds = now.second
 
-        #угол для каждой руки
-        seconds_angle = (seconds / 60) * 360
-        minutes_angle = (minutes / 60) * 360
+        self.right_angle = -(minutes + seconds / 60) * 6
+        self.left_angle = -seconds * 6
 
-        #руки рисуем
-        self.draw_hand(self.second_hand, seconds_angle)
-        self.draw_hand(self.minute_hand, minutes_angle)
+    def draw(self, screen):
+        screen.blit(self.background, (0, 0))
+
+        rotated_right = pygame.transform.rotate(
+            self.right_hand, self.right_angle
+        )
+
+        rotated_left = pygame.transform.rotate(
+            self.left_hand, self.left_angle
+        )
+
+        right_rect = rotated_right.get_rect(center=self.center)
+        left_rect = rotated_left.get_rect(center=self.center)
+
+        screen.blit(rotated_right, right_rect)
+        screen.blit(rotated_left, left_rect)
