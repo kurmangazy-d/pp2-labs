@@ -14,11 +14,9 @@ FPS = 60
 FramePerSec = pygame.time.Clock()
 
 #цвета
-BLUE = (0, 0, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+RED   = (255, 0, 0)
 
 #окно
 SCREEN_WIDTH = 400
@@ -26,10 +24,13 @@ SCREEN_HEIGHT = 600
 
 #параметры
 SPEED = 5
+ENEMY_SPEED = 5
 SCORE = 0
 COINS = 0
+PICKED = 0
+N = 5                 
 
-#шрифт
+#шрифты
 font = pygame.font.SysFont("Verdana", 60)
 font_small = pygame.font.SysFont("Verdana", 20)
 game_over = font.render("Game Over", True, BLACK)
@@ -53,11 +54,22 @@ enemy_img = pygame.image.load(
     os.path.join(IMAGES, "Enemy.png")
 )
 
-coin_img = pygame.image.load(
-    os.path.join(IMAGES, "Coin.png")
+gold_coin = pygame.image.load(
+    os.path.join(IMAGES, "coin.png")
 )
 
-coin_img = pygame.transform.scale(coin_img, (35, 35))
+bronze_coin = pygame.image.load(
+    os.path.join(IMAGES, "bronze.png")
+)
+
+silver_coin = pygame.image.load(
+    os.path.join(IMAGES, "silver.png")
+)
+
+#размеры для монет
+gold_coin = pygame.transform.scale(gold_coin, (40, 40))
+silver_coin = pygame.transform.scale(silver_coin, (35, 35))
+bronze_coin = pygame.transform.scale(bronze_coin, (30, 30))
 
 #грузим звук
 crash_sound = pygame.mixer.Sound(
@@ -68,10 +80,10 @@ background_sound = pygame.mixer.Sound(
     os.path.join(SOUNDS, "background.wav")
 )
 
-background_sound.play(-1)   #бесконечность не предел
+background_sound.play(-1)
 
 #окно
-DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+DISPLAYSURF = pygame.display.set_mode((400, 600))
 pygame.display.set_caption("Racer")
 
 #классы
@@ -90,7 +102,7 @@ class Enemy(pygame.sprite.Sprite):
     def move(self):
         global SCORE
 
-        self.rect.move_ip(0, SPEED)
+        self.rect.move_ip(0, ENEMY_SPEED)
 
         if self.rect.top > SCREEN_HEIGHT:
             SCORE += 1
@@ -126,7 +138,19 @@ class Coin(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
-        self.image = coin_img
+        #рандом
+        self.weight = random.choice([1, 2, 3])
+
+        
+        if self.weight == 1:
+            self.image = bronze_coin
+
+        elif self.weight == 2:
+            self.image = silver_coin
+
+        else:
+            self.image = gold_coin
+
         self.rect = self.image.get_rect()
 
         self.rect.center = (
@@ -159,7 +183,7 @@ INC_SPEED = pygame.USEREVENT + 1
 SPAWN_COIN = pygame.USEREVENT + 2
 
 pygame.time.set_timer(INC_SPEED, 1000)
-pygame.time.set_timer(SPAWN_COIN, 2200)
+pygame.time.set_timer(SPAWN_COIN, 2000)
 
 #главный цикл
 while True:
@@ -170,40 +194,38 @@ while True:
             pygame.quit()
             sys.exit()
 
+        #скорость дороги
         if event.type == INC_SPEED:
             SPEED += 0.2
 
+        #спамним рандомный коин
         if event.type == SPAWN_COIN:
             new_coin = Coin()
             coins.add(new_coin)
             all_sprites.add(new_coin)
 
-    #наш фон
+    #фон
     DISPLAYSURF.blit(background, (0, 0))
 
-    #score
+    #наш счкт
     score_text = font_small.render(
         "Score: " + str(SCORE),
         True,
         BLACK
     )
-
     DISPLAYSURF.blit(score_text, (10, 10))
 
-    #coins
+    #текст для коина
     coin_text = font_small.render(
         "Coins: " + str(COINS),
         True,
         BLACK
     )
-
     coin_rect = coin_text.get_rect(
         topright=(SCREEN_WIDTH - 10, 10)
     )
-
     DISPLAYSURF.blit(coin_text, coin_rect)
 
-    
     
     for entity in all_sprites:
         DISPLAYSURF.blit(entity.image, entity.rect)
@@ -226,7 +248,7 @@ while True:
         pygame.quit()
         sys.exit()
 
-    #собираем монеты
+    #коллекшн коина
     collected = pygame.sprite.spritecollide(
         P1,
         coins,
@@ -234,7 +256,14 @@ while True:
     )
 
     if collected:
-        COINS += len(collected)
+
+        for coin in collected:
+            COINS += coin.weight
+            PICKED += 1
+
+            #повышается скорость
+            if PICKED % N == 0:
+                ENEMY_SPEED += 1
 
     pygame.display.update()
     FramePerSec.tick(FPS)
