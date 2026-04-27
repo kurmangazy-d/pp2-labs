@@ -1,0 +1,15 @@
+[
+    {
+        "name": "Dana",
+        "email": "dhajk@gmail.com",
+        "birthday": "2007-11-22",
+        "group": "Work",
+        "created_at": "2026-04-25 14:53:52.605471",
+        "phones": [
+            {
+                "phone": "8 777 888 9999",
+                "type": "home"
+            }
+        ]
+    }
+]

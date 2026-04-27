@@ -1,8 +1,18 @@
 [
     {
+        "score": 14,
+        "coins": 29,
+        "level": 3
+    },
+    {
         "score": 7,
         "coins": 24,
         "level": 2
+    },
+    {
+        "score": 1,
+        "coins": 3,
+        "level": 1
     },
     {
         "score": 1,
