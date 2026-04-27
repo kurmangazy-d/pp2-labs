@@ -10,6 +10,11 @@
         "level": 2
     },
     {
+        "score": 2,
+        "coins": 4,
+        "level": 1
+    },
+    {
         "score": 1,
         "coins": 3,
         "level": 1

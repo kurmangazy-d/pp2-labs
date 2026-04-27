@@ -1,8 +1,8 @@
 import psycopg2
 
 
-DB_NAME = "snake_game"
-DB_USER = "dqurmangazy"
+DB_NAME = "tsis4"
+DB_USER = "postgres"
 DB_HOST = "localhost"
 DB_PORT = "5432"
 
